@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <script src="js/aws-cognito-sdk.min.js"></script>
+    <script src="js/amazon-cognito-identity.min.js"></script>
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places&amp;key="></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" integrity="sha256-c3RzsUWg+y2XljunEQS0LqWdQ04X1D3j22fd/8JCAKw=" crossorigin="anonymous"></script>
+
+    <script src="js/config.js"></script>
+    <script src="js/cognito-auth.js"></script>
+    <script src="js/covid-locator.js"></script>
+
+
+    <title>Calculateur de distance Covid</title>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="">Distance Covid</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <div class="my-2 my-lg-0">
+            <a class="nav-link" href="https://github.com/wallouf/distance-covid">Code source</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main role="main">
+      <div class="pt-3  text-center mt-5">
+        <div class="container">
+          <h1 class="jumbotron-heading">Distance Covid</h1>
+          <p class="lead text-muted">Indiquez votre adresse et vous pourrez voir les déplacements possibles à 100 km autour !<br /><small>Vous pouvez aussi voir votre position par rapport à ce cercle en utilisant la fonction "Ma position"<br /><br />Aucune de vos données ne sont sauvegardés ou utilisés.</small></p>
+
+          <div class="text-left">
+            <label for="locatorAddress">Adresse du domicile</label>
+          </div>
+          <div class="text-left input-group mb-3">
+            <input type="text" class="form-control" id="locatorAddress" placeholder="Inscrivez votre adresse" aria-label="Address" aria-describedby="Address">
+            <div class="btn-group" role="group">
+              <button class="btn btn-primary" id="locatorBtn">Afficher</button>
+              
+              <div class="btn-group dropleft" role="group">
+                <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Autre
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <button class="dropdown-item" id="myLocationBtn">Ma position</button>
+                  <button class="dropdown-item" id="saveLocationBtn">Sauvegarder</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+          <div id="addressAlerts" class="alert alert-danger d-none" role="alert"></div>
+          <div class="map-responsive">
+            <div style="width:100%;height: 500px;" id="locatorMaps"></div>
+          </div>
+      </div>
+    </main>
+
+  </body>
+</html>
