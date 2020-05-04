@@ -1,8 +1,3 @@
-/*global SudokuSolver _config*/
-
-var SudokuSolver = window.SudokuSolver || {};
-SudokuSolver.map = SudokuSolver.map || {};
-
 // On initialise la latitude et la longitude de Paris (centre de la carte)
 var initLat = 48.852969;
 var initLon = 2.349903;
