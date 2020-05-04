@@ -2,6 +2,8 @@
 var initLat = 48.852969;
 var initLon = 2.349903;
 var map = null;
+var printPlugin = null;
+
 var locationMarker = null;
 var homeMarker = null;
 var homeCircle = null;
@@ -161,20 +163,6 @@ var payloadToken = {};
         link.click();
     }
 
-    function initSaveBtn() {
-        $("#saveLocationBtn").click(function() {
-            html2canvas($("#locatorMaps"), {
-                useCORS: true,
-                scale: 2,
-                onrendered: function( canvas ) {
-                  var img = canvas.toDataURL("image/png")
-
-                  saveBase64AsFile(img, "deplacements_autorise.png");
-                }
-            });
-        });
-    }
-
     function handleLocationError(browserHasGeolocation) {
         displayAddressAlert(browserHasGeolocation ?
                               'Erreur: La geolocalisation a echoué.' :
@@ -183,7 +171,7 @@ var payloadToken = {};
 
     // Fonction d'initialisation de la carte
     function initMap() {
-        map = L.map('locatorMaps').setView([initLat, initLon], 8); // LIGNE 18
+        map = L.map('locatorMaps', {renderer: L.canvas()}).setView([initLat, initLon], 8); // LIGNE 18
 
         var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
             attribution: '© OpenStreetMap contributors',
@@ -191,6 +179,11 @@ var payloadToken = {};
         });
     
         map.addLayer(osmLayer);
+
+        // printPlugin = L.easyPrint({
+        //     hidden: true,
+        //     sizeModes: ['A4Portrait']
+        // }).addTo(map);
     }
 
     // Register click handler for #request button
@@ -199,7 +192,7 @@ var payloadToken = {};
         initMap();
         autoCompleteAddress();
         initMyLocationBtn();
-        initSaveBtn();
+
         initSearchAgain();
 
     });
