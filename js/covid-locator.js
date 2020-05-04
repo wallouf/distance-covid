@@ -8,11 +8,11 @@ var initLat = 48.852969;
 var initLon = 2.349903;
 var map = null;
 var locationMarker = null;
+var homeMarker = null;
+var homeCircle = null;
 var positionCircle = null;
 
 var payloadToken = {};
-
-var addressFound = false;
 
 (function homeScopeWrapper($) {
 
@@ -34,6 +34,7 @@ var addressFound = false;
         .autocomplete({
             minLength: 2,
             source: function (request, response) {
+                displayAddressAlert();
                 $.ajax({
                     url: "https://api-adresse.data.gouv.fr/search/",
                     data: { 
@@ -45,48 +46,85 @@ var addressFound = false;
                         response($.map(data.features, function (item) {
                             return { label: item.properties.label, value: item.properties.label, coordinates: item.geometry.coordinates};
                         }));
+                    },
+                    error: function(errorMsg){
+                        displayAddressAlert("Erreur avec le service d'adresses. Reessayez plus tard.");
+                        $("#locatorAddress").val('');
+                        console.log(errorMsg);
                     }
                 });
             },
             select: function ( event, ui) {
-                // $("#locatorAddress").val(ui.item.label);
-
-
-                alert('You selected: ' + ui.item.coordinates);
+                displayResult(ui.item.coordinates);
             }
         });
     }
 
-    function searchAgain(){
-
+    function initSearchAgain(){
+        $("#locatorBtn").click(function() {
+            displayAddressAlert();
+            var address = $("#locatorAddress").val();
+            if(address != undefined && address.length > 2){
+                $.ajax({
+                    url: "https://api-adresse.data.gouv.fr/search/",
+                    data: { 
+                      q: address,
+                      limit: 5
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.features.length > 0){
+                            displayResult(data.features[0].geometry.coordinates);
+                            $("#locatorAddress").val(data.features[0].properties.label)
+                        }else{
+                            displayAddressAlert("Erreur avec l'adresse. Utilisez le champ de recherche.");
+                            $("#locatorAddress").val('');
+                        }
+                    },
+                    error: function(errorMsg){
+                        displayAddressAlert("Erreur avec le service d'adresses. Reessayez plus tard.");
+                        $("#locatorAddress").val('');
+                        console.log(errorMsg);
+                    }
+                });
+            }else{
+                displayAddressAlert("Erreur avec l'adresse. Utilisez le champ de recherche.");
+                $("#locatorAddress").val('');
+            }
+        });
     }
 
-    function displayResult(){
-
+    function displayResult(coordinates){
+        if (homeMarker != undefined){
+            map.removeLayer(homeMarker);
+        }
+        if (homeCircle != undefined){
+            map.removeLayer(homeCircle);
+        }
+        var latlng = new L.LatLng(coordinates[1], coordinates[0]);
+        homeMarker = L.marker(latlng).addTo(map).bindPopup('Mon domicile');
+        homeCircle = L.circle(latlng, 100000).addTo(map);
+        map.setView(latlng, 8);
     }
 
     function initMyLocationBtn(){
         $("#myLocationBtn").click(function() {
-            if(addressFound == false){
-                displayAddressAlert("Trouvez d'abord votre adresse.");
-            }else{
-                // Try HTML5 geolocation.
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(location) {
-                        if (locationMarker != undefined){
-                            map.removeLayer(locationMarker);
-                        }
-                        var latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
-                        locationMarker = L.marker(latlng).addTo(map).bindPopup('Domicile');
-                        map.setView(latlng, 7);
+            // Try HTML5 geolocation.
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(location) {
+                    if (locationMarker != undefined){
+                        map.removeLayer(locationMarker);
+                    }
+                    var latlng = new L.LatLng(location.coords.latitude, location.coords.longitude);
+                    locationMarker = L.marker(latlng).addTo(map).bindPopup('Ma position');
+                    map.setView(latlng, 7);
 
-                    }, function() {
-                        handleLocationError(true);
-                    });
-                } else {
-                    // Browser doesn't support Geolocation
-                    handleLocationError(false);
-                }
+                }, function() {
+                    handleLocationError(true);
+                });
+            } else {
+                // Browser doesn't support Geolocation
+                handleLocationError(false);
             }
         });
     }
@@ -121,7 +159,7 @@ var addressFound = false;
 
     // Fonction d'initialisation de la carte
     function initMap() {
-        map = L.map('locatorMaps').setView([initLat, initLon], 10); // LIGNE 18
+        map = L.map('locatorMaps').setView([initLat, initLon], 8); // LIGNE 18
 
         var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { // LIGNE 20
             attribution: '© OpenStreetMap contributors',
@@ -133,12 +171,12 @@ var addressFound = false;
 
     // Register click handler for #request button
     $(function onDocReady() {
-        addressFound = false;
 
         initMap();
         autoCompleteAddress();
         initMyLocationBtn();
         initSaveBtn();
+        initSearchAgain();
 
     });
 
