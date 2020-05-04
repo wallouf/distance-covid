@@ -44,7 +44,7 @@ var payloadToken = {};
                     },
                     error: function(errorMsg){
                         displayAddressAlert("Erreur avec le service d'adresses. Reessayez plus tard.");
-                        $("#locatorAddress").val('');
+                        resetMaps();
                         console.log(errorMsg);
                     }
                 });
@@ -84,20 +84,36 @@ var payloadToken = {};
                             $("#locatorAddress").val(data.features[0].properties.label)
                         }else{
                             displayAddressAlert("Erreur avec l'adresse. Utilisez le champ de recherche.");
-                            $("#locatorAddress").val('');
+                            resetMaps();
                         }
                     },
                     error: function(errorMsg){
                         displayAddressAlert("Erreur avec le service d'adresses. Reessayez plus tard.");
-                        $("#locatorAddress").val('');
+                        resetMaps();
                         console.log(errorMsg);
                     }
                 });
             }else{
                 displayAddressAlert("Erreur avec l'adresse. Utilisez le champ de recherche.");
-                $("#locatorAddress").val('');
+                resetMaps();
             }
         });
+        $("#clearBtn").click(function() {
+            resetMaps();
+        });
+    }
+
+    function resetMaps(){
+        $("#locatorAddress").val('');
+        if (homeMarker != undefined){
+            map.removeLayer(homeMarker);
+        }
+        if (homeCircle != undefined){
+            map.removeLayer(homeCircle);
+        }
+        if (locationMarker != undefined){
+            map.removeLayer(locationMarker);
+        }
     }
 
     function displayResult(coordinates){
@@ -184,6 +200,8 @@ var payloadToken = {};
         initMyLocationBtn();
         initSaveBtn();
         initSearchAgain();
+
+        $('[data-toggle="tooltip"]').tooltip();
 
     });
 
