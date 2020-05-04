@@ -132,6 +132,7 @@ var payloadToken = {};
 
     function initMyLocationBtn(){
         $("#myLocationBtn").click(function() {
+            displayAddressAlert();
             // Try HTML5 geolocation.
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(location) {
@@ -200,8 +201,6 @@ var payloadToken = {};
         initMyLocationBtn();
         initSaveBtn();
         initSearchAgain();
-
-        $('[data-toggle="tooltip"]').tooltip();
 
     });
 
