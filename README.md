@@ -18,3 +18,5 @@ This application display:
 * API use: French gouv.api Rest call to autocomplete address
 
 Uploaded on AWS S3 static website and CloudFront ( Https required for location )
+
+OpenSource. Licence GNU GPL v3.
